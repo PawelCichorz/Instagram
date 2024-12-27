@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 try{
-    // Sprawdzenie, czy użytkownik  istnieje
+    
     const userExists = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userExists.rows.length === 0) {
       return NextResponse.json({ error: 'invalid email or password' }, { status: 400 });
@@ -31,7 +31,7 @@ console.log(user.password)
     }
 
     const token = jwt.sign(
-        { id: user.id, email: user.email },
+        { id: user.id, email: user.email, userName: user.user_name },
         process.env.JWT_SECRET as string,
         { expiresIn: '60m' }
     );
@@ -45,6 +45,8 @@ console.log(user.password)
         path: '/',
         sameSite: 'lax',
     });
+
+  
 
     return NextResponse.json({ message: 'Login successful', token }, { status: 200 });
 } catch (error) {
